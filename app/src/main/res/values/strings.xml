@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Final Year Project</string>
+    <string name="Idname">Your ID</string>
+
+
+    <string-array name="town_array">
+
+
+        <item>Bin Qasim town</item>
+        <item>Kimari Town</item>
+        <item>korangi Town</item>
+        <item>New Kalachi Town</item>
+        <item>North Nazimabad Town</item>
+        <item>Gadap Town</item>
+        <item>Gulberg Town</item>
+        <item>Gulshan Town</item>
+        <item>Landhi Town</item>
+        <item>Lyari Town</item>
+        <item>Liaquatabad Town</item>
+        <item>Orangi Town</item>
+        <item>Jamshed Town</item>
+        <item>Malir Town</item>
+        <item>Saddar Town</item>
+        <item>Shah Faisal Town</item>
+        <item>SITE town</item>
+
+
+    </string-array>
+    <string name="loading">Loading </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_menu_">Menu_Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
