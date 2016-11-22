@@ -1,10 +1,12 @@
 package com.example.hamza.finalyearproject1;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,8 +45,17 @@ public class Login_Activity extends FragmentActivity implements
         //Finding IDS
 
         googleSignin = (SignInButton) findViewById(R.id.google_sign_in);
+        fbButton = (Button) findViewById(R.id.fb);
         googleSignin.setOnClickListener(this);
 
+
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Login_Activity.this,Menu_Activity.class);
+                startActivity(intent);
+            }
+        });
         //GOOGLE SIGN-IN
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -126,7 +137,7 @@ public class Login_Activity extends FragmentActivity implements
             GoogleSignInAccount signin_Acount = result.getSignInAccount();
 
             updateUI(true);
-            Intent intent = new Intent(Login_Activity.this, Menu_Activity.class);
+            Intent intent = new Intent(Login_Activity.this, ComplainSubmision.class);
             startActivity(intent);
         } else {
             updateUI(false);
@@ -169,7 +180,20 @@ public class Login_Activity extends FragmentActivity implements
 
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
+                    public void onClick(DialogInterface arg0, int arg1) {
+                       Login_Activity.super.onBackPressed();
+                    }
+                }).create().show();
+
+    }
 
 
 
@@ -179,7 +203,7 @@ public class Login_Activity extends FragmentActivity implements
  public void onClick(View v) {
  switch (v.getId()) {
  case R.id.google_sign_in:
-     showProgressDialogue();
+
  signIn();
  break;
 
