@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,6 +30,13 @@ public class Login_Activity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu1_, menu);
+        return true;
+    }
+
             GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Login Activity";
 
@@ -41,6 +50,9 @@ public class Login_Activity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+
 
         //Finding IDS
 
@@ -179,7 +191,7 @@ public class Login_Activity extends FragmentActivity implements
         }
 
     }
-
+//Exiting From Activity
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -190,6 +202,7 @@ public class Login_Activity extends FragmentActivity implements
 
                     public void onClick(DialogInterface arg0, int arg1) {
                        Login_Activity.super.onBackPressed();
+                        finish();
                     }
                 }).create().show();
 
