@@ -30,12 +30,7 @@ public class Login_Activity extends FragmentActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu1_, menu);
-        return true;
-    }
+
 
             GoogleApiClient mGoogleApiClient;
     private static final String TAG = "Login Activity";
@@ -64,7 +59,7 @@ public class Login_Activity extends FragmentActivity implements
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Login_Activity.this,Menu_Activity.class);
+                Intent intent = new Intent(Login_Activity.this,CurrentStatus.class);
                 startActivity(intent);
             }
         });
@@ -149,8 +144,8 @@ public class Login_Activity extends FragmentActivity implements
             GoogleSignInAccount signin_Acount = result.getSignInAccount();
 
             updateUI(true);
-            Intent intent = new Intent(Login_Activity.this, ComplainSubmision.class);
-            startActivity(intent);
+           // Intent intent = new Intent(Login_Activity.this, MenuActivity.class);
+           // startActivity(intent);
         } else {
             updateUI(false);
         }

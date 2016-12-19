@@ -4,15 +4,19 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+
+import com.facebook.accountkit.AccountKit;
 
 public class FrontActivity extends FragmentActivity {
 
 
-    DBHelper complainDB;
 
     Button buttonLogin;
+
 
 
 
@@ -21,7 +25,9 @@ public class FrontActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        complainDB = new DBHelper(this);
+        AccountKit.initialize(getApplicationContext());
+
+        
         //Finding IDS
 
         buttonLogin = (Button) findViewById(R.id.loginButton);

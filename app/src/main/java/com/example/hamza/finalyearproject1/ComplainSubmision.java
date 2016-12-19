@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,23 +14,29 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class ComplainSubmision extends AppCompatActivity {
 
     AutoCompleteTextView townTextView,complainTypetextView;
     EditText unioncouncils,desc;
-    Button complainNextButton,databaseManagerButton;
+    Button complainNextButton;
     private static final int IMAGE_REQUEST = 1888;
     DBHelper complainDB;
-    SQLiteDatabase db;
     Bitmap image;
     ImageView imageview;
     byte[] imageInByte;
 
-
+    ConnectionClass connectionClass;
+    ProgressBar progressBar;
 
 
     String[] towns ={"Baldia Town","Bin Qasim Town","Kimari Town","Korangi Town","New karachi Town","North Nazimabad Town","Gadap Town","Gulshan Town",
@@ -47,6 +54,7 @@ public class ComplainSubmision extends AppCompatActivity {
 
         {
 
+
             image = (Bitmap) intent.getExtras().get("data");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.JPEG, 0, stream);
@@ -63,16 +71,19 @@ public class ComplainSubmision extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_complain);
+        connectionClass = new ConnectionClass();
 
-        complainDB = new DBHelper(this);
+
+
 
         //fetchingID's
+        progressBar = (ProgressBar)findViewById(R.id.progressbar);
         unioncouncils = (EditText)findViewById(R.id.ucField);
         desc = (EditText) findViewById(R.id.descField);
         townTextView = (AutoCompleteTextView) findViewById(R.id.townfield);
         complainTypetextView = (AutoCompleteTextView) findViewById(R.id.complainlist);
         complainNextButton = (Button) findViewById(R.id.button_next);
-        databaseManagerButton = (Button) findViewById(R.id.databasemanager);
+
       //  imageview = (ImageView) findViewById(R.id.imageview);
       //  imageview.setImageBitmap(image);
 
@@ -118,20 +129,16 @@ public class ComplainSubmision extends AppCompatActivity {
         complainNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //InsertDAta into Database
-              insertData();
-               Intent intent = new Intent(ComplainSubmision.this,ComplainSubmisionAuthentication.class);
-                startActivity(intent);
-            }
-        });
-        databaseManagerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dbmanager = new Intent(ComplainSubmision.this,AndroidDatabaseManager.class);
-                startActivity(dbmanager);
 
+                InsertComplain insertComp = new InsertComplain();
+                insertComp.execute("");
+                //InsertDAta into Database
+            /**  insertData();
+               Intent intent = new Intent(ComplainSubmision.this,ComplainSubmisionAuthentication.class);
+                startActivity(intent);**/
             }
         });
+
 
 
 
@@ -145,8 +152,84 @@ public class ComplainSubmision extends AppCompatActivity {
 
         }
 
+    public class InsertComplain extends AsyncTask<String,String,String>
+    {
+        String z = "";
+        Boolean isSuccess = false;
+        String towntext = townTextView.getText().toString();
+        String uc = unioncouncils.getText().toString();
+        String compType = complainTypetextView.getText().toString();
+        String description = desc.getText().toString();
 
-    public void insertData()
+
+
+       @Override
+        protected void onPreExecute()
+       {
+           progressBar.setVisibility(View.VISIBLE);
+       }
+
+        @Override
+        protected void onPostExecute(String r)
+        {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(),r,Toast.LENGTH_SHORT).show();
+
+            if(isSuccess)
+            {
+                Toast.makeText(getApplicationContext(),"Inserted", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {Toast.makeText(getApplicationContext(),"NOt Inserted",Toast.LENGTH_SHORT).show();}
+
+        }
+
+        @Override
+        protected String doInBackground(String...params)
+        {
+            if(towntext.trim().equals(""))
+            {
+                z= "Plesae enter Town ";
+            }
+            else
+            {
+                try
+                {
+                    Connection conn = connectionClass.CONN();
+                    if(conn==null)
+                    {
+                        z = "Error In Connection";
+
+                    }
+                    else
+                    {
+                        String dates = new SimpleDateFormat("MM/DD/YY", Locale.ENGLISH)
+                                .format(Calendar.getInstance().getTime());
+                        String query = "insert into ComplainTable(Town,UC,ComplainType,Description) " +
+                                "values('"+towntext+"','"+uc+"','"+compType+"','"+description+"')";
+                        PreparedStatement preparedStatement = conn.prepareStatement(query);
+                        preparedStatement.executeUpdate();
+                        z= "Added Successfully";
+                        isSuccess = true ;
+
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    isSuccess = false ;
+                    z = "Exception";
+
+                }
+            }
+            return z;
+
+        }
+    }
+
+
+   /**  public void insertData()
     {
                 Boolean isInserted =  complainDB.insertComplain(townTextView.getText().toString(),
                         unioncouncils.getText().toString(),
@@ -162,7 +245,7 @@ public class ComplainSubmision extends AppCompatActivity {
             }
 
 
-
+**/
 
 
     //On camera Intent Result

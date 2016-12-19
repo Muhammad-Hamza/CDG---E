@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hamza.finalyearproject1" >
-
+          package="com.example.hamza.finalyearproject1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -19,23 +18,30 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
+                <meta-data
+                    android:name="com.facebook.sdk.ApplicationId"
+                    android:value="@string/facebook_app_id"/>
+                <meta-data
+                    android:name="com.facebook.accountkit.ApplicationName"
+                    android:value="@string/app_name"/>
+                <meta-data
+                    android:name="com.facebook.accountkit.ClientToken"
+                    android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.example.hamza.finalyearproject1.ComplainSubmision">
+        <activity android:name=".ComplainSubmision">
         </activity>
-        <activity android:name="com.example.hamza.finalyearproject1.ComplainSubmisionAuthentication">
+        <activity android:name=".ComplainSubmisionAuthentication">
         </activity>
         <activity
-            android:name="com.example.hamza.finalyearproject1.AndroidDatabaseManager"
+            android:name=".AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light">
         </activity>
-        <activity android:name="com.example.hamza.finalyearproject1.Login_Activity">
+        <activity android:name=".Login_Activity">
         </activity>
-        <activity
-            android:name="com.example.hamza.finalyearproject1.Menu_Activity"
-            android:label="@string/title_activity_menu_"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".CurrentStatus">
         </activity>
     </application>
 
