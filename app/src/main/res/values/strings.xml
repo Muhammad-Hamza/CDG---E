@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Final Year Project</string>
     <string name="Idname">Your ID</string>
-    <string name="facebook_app_id">227746274319620</string>
-    <string name="ACCOUNT_KIT_CLIENT_TOKEN">09900</string>
+    <string name="FACEBOOK_APP_ID">227746274319620</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">3e74274530e5a104fa40236e8f90e826</string>
 
 
     <string-array name="town_array">
@@ -29,6 +29,14 @@
 
     </string-array>
     <string name="loading">Loading </string>
+    <string name="permissions_receive_sms_title">Read SMS Code</string>
+     <string name="permissions_receive_sms_message">
+        Grant permission to read your SMS code from your device to pre-fill.
+    </string>
+    <string name="permissions_read_phone_state_message">
+        Grant permission to read your phone number from your device to pre-fill.
+    </string>
+    <string name="permissions_read_phone_state_title">Read Phone Number</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

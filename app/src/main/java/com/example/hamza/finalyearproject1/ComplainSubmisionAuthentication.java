@@ -13,7 +13,7 @@ public class ComplainSubmisionAuthentication extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complain_submision_authentication);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+      FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
     }
 
