@@ -55,9 +55,10 @@ public class FrontActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AccountKit.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        AccountKit.initialize(getApplicationContext());
+
 
         //AcountKit Integration
         if(AccountKit.getCurrentAccessToken() != null)

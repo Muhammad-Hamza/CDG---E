@@ -18,11 +18,11 @@ public class ErrorActivity extends AppCompatActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_error);
-/**
-     //  final Button signOut = (Button) findViewById(R.id.log_out_button);
-      //  signOut.setOnClickListener(new View.OnClickListener() {
-           // @Override
-           // public void onClick(View v) {
+
+       final Button signOut = (Button) findViewById(R.id.log_out_button);
+        signOut.setOnClickListener(new View.OnClickListener() {
+           @Override
+            public void onClick(View v) {
                 AccountKit.logOut();
                 finish();
             }
@@ -41,4 +41,3 @@ public class ErrorActivity extends AppCompatActivity {
         }
     }
 }
-**/}}
