@@ -59,7 +59,7 @@ public class Login_Activity extends FragmentActivity implements
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Login_Activity.this,CurrentStatus.class);
+                Intent intent = new Intent(Login_Activity.this,ComplainSubmision.class);
                 startActivity(intent);
             }
         });

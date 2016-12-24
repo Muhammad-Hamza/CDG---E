@@ -34,11 +34,11 @@ import static android.R.attr.permission;
 
 public class FrontActivity extends Activity {
 
-
-
+    Button buttonLogin;
+/**
     private  static final  int FRAMEWORK_REQUEST_CODE = 1;
     private int nextPermisionRequestCode = 4000;
-    Button buttonLogin;
+
 
 
     private final Map<Integer, OnCompleteListener> permissionsListeners = new HashMap<>();
@@ -48,7 +48,7 @@ public class FrontActivity extends Activity {
         void onComplete();
 
     }
-
+**/
 
 
 
@@ -57,19 +57,6 @@ public class FrontActivity extends Activity {
         super.onCreate(savedInstanceState);
         AccountKit.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
-
-
-
-        //AcountKit Integration
-        if(AccountKit.getCurrentAccessToken() != null)
-        {
-            startActivity(new Intent(this,TokenActivity.class));
-        }
-
-
-
-
-        //Finding IDS
 
         buttonLogin = (Button) findViewById(R.id.loginButton);
 
@@ -85,6 +72,19 @@ public class FrontActivity extends Activity {
 
             }
         });
+/**
+        //AcountKit Integration
+        if(AccountKit.getCurrentAccessToken() != null)
+        {
+            startActivity(new Intent(this,TokenActivity.class));
+        }
+
+
+
+
+        //Finding IDS
+
+
 
 
     }
@@ -265,3 +265,4 @@ public class FrontActivity extends Activity {
         }
     }
 }
+**/}}
