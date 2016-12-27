@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,8 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.accountkit.AccessToken;
@@ -23,6 +27,16 @@ import com.facebook.accountkit.ui.AccountKitConfiguration;
 
 import com.facebook.accountkit.ui.LoginType;
 import com.facebook.accountkit.AccountKit;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 
 import java.util.HashMap;
@@ -32,33 +46,212 @@ import static android.Manifest.permission_group.PHONE;
 import static android.R.attr.permission;
 
 
-public class FrontActivity extends Activity {
+public class FrontActivity extends FragmentActivity implements
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
 
     Button buttonLogin;
-/**
-    private  static final  int FRAMEWORK_REQUEST_CODE = 1;
-    private int nextPermisionRequestCode = 4000;
 
 
 
-    private final Map<Integer, OnCompleteListener> permissionsListeners = new HashMap<>();
+    GoogleApiClient mGoogleApiClient;
+    private static final String TAG = "Login Activity";
 
-    private  interface  OnCompleteListener {
-
-        void onComplete();
-
-    }
-**/
-
-
+    TextView _linkSignup;
+    ProgressDialog mProgressDialog;
+    private static final int RC_SIGN_IN = 9001;
+    SignInButton googleSignin;
+    Button fbButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AccountKit.initialize(getApplicationContext());
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
-        buttonLogin = (Button) findViewById(R.id.loginButton);
+
+
+
+        //Finding IDS
+
+        googleSignin = (SignInButton) findViewById(R.id.google_sign_in);
+        googleSignin.setSize(SignInButton.SIZE_WIDE);
+        fbButton = (Button) findViewById(R.id.fb);
+        googleSignin.setOnClickListener(this);
+
+
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FrontActivity.this,ComplainSubmision.class);
+                startActivity(intent);
+            }
+        });
+        //GOOGLE SIGN-IN
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+    }
+
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(getApplicationContext(), "" + connectionResult, Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()) {
+            Log.d(TAG, "Signed in");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            showProgressDialogue();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+
+        }
+    }
+
+
+    private void showProgressDialogue()
+
+    {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignin Result" + result.isSuccess());
+        if (result.isSuccess()) {
+            GoogleSignInAccount signin_Acount = result.getSignInAccount();
+
+            updateUI(true);
+            //Intent intent = new Intent(FrontActivity.this, ComplainSubmision.class);
+           // startActivity(intent);
+        } else {
+            updateUI(false);
+        }
+
+    }
+
+    private void signIn() {
+        Intent signIn_Intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signIn_Intent, RC_SIGN_IN);
+
+
+    }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                updateUI(false);
+            }
+        });
+    }
+
+    private void revokeAcces() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                updateUI(false);
+            }
+        });
+    }
+
+    public void updateUI(boolean signedIn) {
+
+        if (signedIn) {
+            findViewById(R.id.google_sign_in).setVisibility(View.GONE);
+            findViewById(R.id.fb).setVisibility(View.VISIBLE);
+        } else {
+            //findViewById(R.id.google_sign_in).setVisibility(View.VISIBLE);
+            findViewById(R.id.fb).setVisibility(View.GONE);
+        }
+
+    }
+    //Exiting From Activity
+    @Override
+    public void onBackPressed() {
+        new android.support.v7.app.AlertDialog.Builder(this)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        FrontActivity.super.onBackPressed();
+                        finish();
+                    }
+                }).create().show();
+
+    }
+
+
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.google_sign_in:
+
+                signIn();
+                break;
+
+
+        }
+
+    }
+
+
+}
+
+
+
+
+      /**  buttonLogin = (Button) findViewById(R.id.loginButton);
 
 
         //Wiring up the login button to fragment
@@ -71,198 +264,4 @@ public class FrontActivity extends Activity {
 
 
             }
-        });
-/**
-        //AcountKit Integration
-        if(AccountKit.getCurrentAccessToken() != null)
-        {
-            startActivity(new Intent(this,TokenActivity.class));
-        }
-
-
-
-
-        //Finding IDS
-
-
-
-
-    }
-    public void onLoginPhone(final  View view) { onLogin(LoginType.PHONE);}
-
-    @Override
-    protected void onActivityResult (
-            final  int requestCode,
-            final int resultCode,
-            final Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-
-        if(requestCode != FRAMEWORK_REQUEST_CODE){
-            return;
-        }
-
-        final String toastMessage;
-        final AccountKitLoginResult loginResult = AccountKit.loginResultWithIntent(data);
-        if(loginResult == null || loginResult.wasCancelled()) {
-            toastMessage = "Login Cancelled";
-
-        }else if (loginResult.getError() != null){
-            toastMessage = loginResult.getError().getErrorType().getMessage();
-            final Intent intent = new Intent (this,ErrorActivity.class);
-            intent.putExtra(ErrorActivity.HELLO_TOKEN_ACTIVITY_ERROR_EXTRA,loginResult.getError());
-            startActivity(intent);
-        }else {
-            final AccessToken accessToken = loginResult.getAccessToken();
-            final long tokenRefreshIntervalInSeconds = loginResult.getTokenRefreshIntervalInSeconds();
-            if(accessToken !=null) {
-                toastMessage = "Success: " + accessToken.getAccountId()
-                        + tokenRefreshIntervalInSeconds;
-                startActivity(new Intent(this, TokenActivity.class));
-            }else {
-                toastMessage = "Unknown response Type";
-            }
-            }
-        Toast.makeText(
-                this,
-                toastMessage,
-                Toast.LENGTH_SHORT
-        ).show();
-        }
-    private void onLogin(final  LoginType loginType)
-    {
-        final Intent intent = new Intent(this,AccountKitActivity.class);
-        final AccountKitConfiguration.AccountKitConfigurationBuilder configurationBuilder
-                = new  AccountKitConfiguration.AccountKitConfigurationBuilder(
-                loginType,
-                AccountKitActivity.ResponseType.TOKEN);
-
-        final  AccountKitConfiguration configuration = configurationBuilder.build();
-        intent.putExtra(
-                AccountKitActivity.ACCOUNT_KIT_ACTIVITY_CONFIGURATION,
-                configuration);
-
-        OnCompleteListener completeListener = new OnCompleteListener() {
-            @Override
-            public void onComplete() {
-                startActivityForResult(intent,FRAMEWORK_REQUEST_CODE);
-            }
-        };
-        switch(loginType){
-            case PHONE:
-                if(configuration.isReceiveSMSEnabled()){
-                    final OnCompleteListener receiveSMSCompleteListener = completeListener;
-
-                       completeListener = new OnCompleteListener() {
-                           @Override
-                           public void onComplete() {
-                               requestPermisions( Manifest.permission.RECEIVE_SMS,
-                                   R.string.permissions_receive_sms_title,
-                                   R.string.permissions_receive_sms_message,
-                                   receiveSMSCompleteListener);
-
-                       }
-
-
-
-                    };
-                }
-                if(configuration.isReadPhoneStateEnabled())
-                { final OnCompleteListener readPhoneStateCompleteListener = completeListener;
-                    completeListener = new OnCompleteListener() {
-                        @Override
-                        public void onComplete() {
-                            requestPermisions( Manifest.permission.READ_PHONE_STATE,
-                                    R.string.permissions_read_phone_state_title,
-                                    R.string.permissions_read_phone_state_message,
-                                    readPhoneStateCompleteListener);
-
-                        }
-                    };
-                            break;
-
-                }
-
-
-
-    }
-        completeListener.onComplete();
-
-
-
-
-    }
-
-    private void  requestPermisions(
-            final  String permission,
-            final int rationaleTitleResourceId,
-            final int rationaleMessageResourceId,
-            final OnCompleteListener listener){
-        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.M){
-            if(listener != null){
-                listener.onComplete();
-
-            }
-            return;
-        }
-        checkRequestPermissions(
-                permission,
-                rationaleTitleResourceId,
-                rationaleMessageResourceId,listener);
-    }
-
-    @TargetApi(23)
-    private void checkRequestPermissions(
-            final String permission,
-            final int rationaleTitleResourceId,
-            final int rationaleMessageResourceId,
-            final OnCompleteListener listener)
-    {
-        if(checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
-        {
-            if(listener!=null){
-                listener.onComplete();
-            }
-            return;
-        }
-        final int requestCode = nextPermisionRequestCode++;
-        permissionsListeners.put(requestCode,listener);
-
-        if(shouldShowRequestPermissionRationale(permission)){
-            new AlertDialog.Builder(this)
-                    .setTitle(rationaleTitleResourceId)
-                    .setMessage(rationaleMessageResourceId)
-            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    requestPermissions(new String[] {permission}, requestCode);
-                }
-            })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(final DialogInterface dialog, final int which) {
-                            // ignore and clean up the listener
-                            permissionsListeners.remove(requestCode);
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        } else {
-            requestPermissions(new String[]{ permission }, requestCode);
-        }
-    }
-
-    @TargetApi(23)
-    @SuppressWarnings("unused")
-    @Override
-    public void onRequestPermissionsResult(final int requestCode,
-                                           final @NonNull String permissions[],
-                                           final @NonNull int[] grantResults) {
-        final OnCompleteListener permissionsListener = permissionsListeners.remove(requestCode);
-        if (permissionsListener != null
-                && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            permissionsListener.onComplete();
-        }
-    }
-}
-**/}}
+        });**/

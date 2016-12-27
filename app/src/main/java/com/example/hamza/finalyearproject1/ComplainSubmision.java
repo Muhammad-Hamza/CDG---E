@@ -104,7 +104,7 @@ public class ComplainSubmision extends AppCompatActivity {
 
 
         //fetchingID's
-        progressBar = (ProgressBar)findViewById(R.id.progressbar);
+
         unioncouncils = (EditText)findViewById(R.id.ucField);
         desc = (EditText) findViewById(R.id.descField);
         townTextView = (AutoCompleteTextView) findViewById(R.id.townfield);
@@ -285,6 +285,7 @@ public class ComplainSubmision extends AppCompatActivity {
 
         }
         completeListener.onComplete();
+
 
 
 
