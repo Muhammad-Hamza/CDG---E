@@ -66,7 +66,7 @@ public class FrontActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
 
 
 
@@ -167,8 +167,10 @@ public class FrontActivity extends FragmentActivity implements
             GoogleSignInAccount signin_Acount = result.getSignInAccount();
 
             updateUI(true);
-            //Intent intent = new Intent(FrontActivity.this, ComplainSubmision.class);
-           // startActivity(intent);
+            Intent intent = new Intent(FrontActivity.this, MenuActivity
+
+                    .class);
+            startActivity(intent);
         } else {
             updateUI(false);
         }

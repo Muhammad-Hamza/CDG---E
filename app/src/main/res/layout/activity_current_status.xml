@@ -13,11 +13,13 @@
         android:layout_gravity="center_horizontal"
         android:autoLink="web"
         android:text="Pie Chart"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <WebView
+
         android:id="@+id/web"
-        android:layout_width="match_parent"
+        android:layout_width="360dp"
         android:layout_height="match_parent"/>
 
 </LinearLayout>

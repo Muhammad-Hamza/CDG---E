@@ -1,7 +1,10 @@
 package com.example.hamza.finalyearproject1;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
@@ -24,9 +27,14 @@ public class CurrentStatus extends AppCompatActivity {
         webview.addJavascriptInterface(new WebAppInterface(),"Android");
         webview.getSettings().setJavaScriptEnabled(true);
         webview.loadUrl("file:///android_asset/chart.html");
+        webview.getSettings().setLoadWithOverviewMode(true);
+        webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setSupportZoom(true);
+        webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setLoadWithOverviewMode(true);
 
     }
-
 
 
     public class WebAppInterface{
