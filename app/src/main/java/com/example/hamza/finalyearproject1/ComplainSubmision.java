@@ -32,6 +32,8 @@ import com.facebook.accountkit.ui.LoginType;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,9 +50,8 @@ public class ComplainSubmision extends AppCompatActivity {
     Bitmap image;
     ImageView imageview;
     byte[] imageInByte;
-
     ConnectionClass connectionClass;
-    ProgressBar progressBar;
+   // ProgressBar progressBar;
 
 
     String[] towns ={"Baldia Town","Bin Qasim Town","Kimari Town","Korangi Town","New karachi Town","North Nazimabad Town","Gadap Town","Gulshan Town",
@@ -73,24 +74,7 @@ public class ComplainSubmision extends AppCompatActivity {
 
     }
 
-   /** protected void onActivityResult(int requestCode,int resultCode,Intent intent)
 
-    {
-        if(requestCode==IMAGE_REQUEST && resultCode == Activity.RESULT_OK)
-
-        {
-
-
-            image = (Bitmap) intent.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-            imageInByte = stream.toByteArray();
-
-
-
-        }
-    }
-**/
 
 
     @Override
@@ -110,9 +94,8 @@ public class ComplainSubmision extends AppCompatActivity {
         townTextView = (AutoCompleteTextView) findViewById(R.id.townfield);
         complainTypetextView = (AutoCompleteTextView) findViewById(R.id.complainlist);
         complainNextButton = (Button) findViewById(R.id.button_next);
+       // progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-      //  imageview = (ImageView) findViewById(R.id.imageview);
-      //  imageview.setImageBitmap(image);
 
 
         //AcountKit Integration
@@ -159,16 +142,16 @@ public class ComplainSubmision extends AppCompatActivity {
         });
 
         //NextButton Of Complainsubmision
-   /**     complainNextButton.setOnClickListener(new View.OnClickListener() {
+  /** complainNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 InsertComplain insertComp = new InsertComplain();
                 insertComp.execute("");
                 //InsertDAta into Database
-           insertData();
-               Intent intent = new Intent(ComplainSubmision.this,ComplainSubmisionAuthentication.class);
-                startActivity(intent);
+          // insertData();
+              // Intent intent = new Intent(ComplainSubmision.this,ComplainSubmisionAuthentication.class);
+               // startActivity(intent);
             }
         });**/
 
@@ -383,22 +366,22 @@ public class ComplainSubmision extends AppCompatActivity {
        @Override
         protected void onPreExecute()
        {
-           progressBar.setVisibility(View.VISIBLE);
+          // progressBar.setVisibility(View.VISIBLE);
        }
 
         @Override
         protected void onPostExecute(String r)
         {
-            progressBar.setVisibility(View.GONE);
+           // progressBar.setVisibility(View.GONE);
             Toast.makeText(getApplicationContext(),r,Toast.LENGTH_SHORT).show();
 
-            if(isSuccess)
+       /**     if(isSuccess)
             {
                 Toast.makeText(getApplicationContext(),"Inserted", Toast.LENGTH_SHORT).show();
             }
             else
             {Toast.makeText(getApplicationContext(),"NOt Inserted",Toast.LENGTH_SHORT).show();}
-
+**/
         }
 
         @Override
@@ -425,9 +408,13 @@ public class ComplainSubmision extends AppCompatActivity {
                         String query = "insert into ComplainTable(Town,UC,ComplainType,Description) " +
                                 "values('"+towntext+"','"+uc+"','"+compType+"','"+description+"')";
                         PreparedStatement preparedStatement = conn.prepareStatement(query);
+                        Statement stmt = conn.createStatement();
+                        ResultSet rs = stmt.executeQuery(query);
                         preparedStatement.executeUpdate();
-                        z= "Added Successfully";
-                        isSuccess = true ;
+                        if(rs.next()) {
+                            z = "Added Successfully";
+                            isSuccess = true;
+                        }
 
                     }
 
@@ -436,7 +423,7 @@ public class ComplainSubmision extends AppCompatActivity {
                 catch (Exception ex)
                 {
                     isSuccess = false ;
-                    z = "Exception";
+                    z = ex.getMessage();
 
                 }
             }

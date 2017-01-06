@@ -44,7 +44,7 @@ public class MenuActivity extends AppCompatActivity {
         news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this,CurrentStatus.class);
+                Intent intent = new Intent(MenuActivity.this,News.class);
                 startActivity(intent);
             }
         });

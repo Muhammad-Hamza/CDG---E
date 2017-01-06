@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -70,6 +71,8 @@
         <activity android:name=".MenuActivity">
         </activity>
         <activity android:name=".FeedBack">
+        </activity>
+        <activity android:name=".News">
         </activity>
     </application>
 
