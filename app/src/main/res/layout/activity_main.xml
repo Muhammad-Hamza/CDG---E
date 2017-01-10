@@ -9,10 +9,10 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/city"
+    android:alpha="0.9"
     tools:context=".FrontActivity"
 
   >
-
 
     <TextView
         android:layout_width="wrap_content"
