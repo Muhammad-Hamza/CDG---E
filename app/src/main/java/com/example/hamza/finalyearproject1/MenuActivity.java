@@ -52,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
         poll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this,CurrentStatus.class);
+                Intent intent = new Intent(MenuActivity.this,FollowUp.class);
                 startActivity(intent);
             }
         });

@@ -74,6 +74,8 @@
         </activity>
         <activity android:name=".News">
         </activity>
+        <activity android:name=".FollowUp">
+        </activity>
     </application>
 
 </manifest>

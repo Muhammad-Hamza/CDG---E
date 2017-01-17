@@ -16,7 +16,7 @@ public class News extends AppCompatActivity {
 
         ArrayList<newsClass> newslist = new ArrayList<newsClass>();
 
-        newslist.add(new newsClass("Water Line broke","10-10-10",R.drawable.city));
+        newslist.add(new newsClass("Water Line broke","10-10-10",R.drawable.logo));
 
         newsCustomArrayAdapter customArrayAdapter = new newsCustomArrayAdapter(this,newslist);
 
